@@ -1,11 +1,11 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import MyPlugin from "./main";
 
-export interface MyPluginSettings {
+export interface CodeRunnerPluginSettings {
   mySetting: string;
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
+export const DEFAULT_SETTINGS: CodeRunnerPluginSettings = {
   mySetting: "default",
 };
 
