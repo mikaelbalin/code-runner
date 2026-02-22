@@ -1,5 +1,5 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
-import MyPlugin from "./main";
+import { type App, PluginSettingTab, Setting } from "obsidian";
+import type MyPlugin from "./main";
 
 export interface CodeRunnerPluginSettings {
   mySetting: string;
@@ -32,7 +32,7 @@ export class SampleSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.mySetting = value;
             await this.plugin.saveSettings();
-          }),
+          })
       );
   }
 }

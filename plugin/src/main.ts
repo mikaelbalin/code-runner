@@ -1,7 +1,11 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin } from "obsidian";
 import {
+  // type App, Modal,
+  Notice,
+  Plugin,
+} from "obsidian";
+import {
+  type CodeRunnerPluginSettings,
   DEFAULT_SETTINGS,
-  CodeRunnerPluginSettings,
   SampleSettingTab,
 } from "./settings";
 
@@ -14,7 +18,7 @@ export default class CodeRunnerPlugin extends Plugin {
     await this.loadSettings();
 
     // This creates an icon in the left ribbon.
-    this.addRibbonIcon("dice", "Greet", (evt: MouseEvent) => {
+    this.addRibbonIcon("dice", "Greet", (_evt: MouseEvent) => {
       // Called when the user clicks the icon.
       new Notice("Hello, world!");
     });
@@ -82,7 +86,7 @@ export default class CodeRunnerPlugin extends Plugin {
     this.settings = Object.assign(
       {},
       DEFAULT_SETTINGS,
-      (await this.loadData()) as Partial<CodeRunnerPluginSettings>,
+      (await this.loadData()) as Partial<CodeRunnerPluginSettings>
     );
   }
 
@@ -91,18 +95,18 @@ export default class CodeRunnerPlugin extends Plugin {
   }
 }
 
-class SampleModal extends Modal {
-  constructor(app: App) {
-    super(app);
-  }
+// class SampleModal extends Modal {
+//   constructor(app: App) {
+//     super(app);
+//   }
 
-  onOpen() {
-    let { contentEl } = this;
-    contentEl.setText("Woah!");
-  }
+//   onOpen() {
+//     const { contentEl } = this;
+//     contentEl.setText("Woah!");
+//   }
 
-  onClose() {
-    const { contentEl } = this;
-    contentEl.empty();
-  }
-}
+//   onClose() {
+//     const { contentEl } = this;
+//     contentEl.empty();
+//   }
+// }
