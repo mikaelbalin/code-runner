@@ -2,6 +2,7 @@ import { copyFile } from "node:fs/promises";
 import { builtinModules } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, type Plugin } from "vite";
 
 function copyToRoot(rootDir: string, files: string[]): Plugin {
@@ -25,7 +26,7 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 export default defineConfig(({ mode }) => ({
-  plugins: [copyToRoot(resolve(__dirname, ".."), ["main.js"])],
+  plugins: [tailwindcss(), copyToRoot(resolve(__dirname, ".."), ["main.js"])],
   build: {
     emptyOutDir: false,
     lib: {
