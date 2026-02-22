@@ -1,4 +1,4 @@
-import { loadPrism, Plugin, requestUrl } from "obsidian";
+import { loadPrism, Plugin, requestUrl, setIcon } from "obsidian";
 import "./styles.css";
 import {
   type CodeRunnerPluginSettings,
@@ -33,9 +33,17 @@ export default class CodeRunnerPlugin extends Plugin {
 
       // Button anchored to the bottom-right of the container
       const btn = wrapper.createEl("button", {
-        cls: "self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-(--interactive-accent) text-(--text-on-accent) border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
-        text: "▶ Run",
+        cls: "inline-flex items-center gap-1 self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-(--interactive-accent) text-(--text-on-accent) border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
       });
+
+      const resetBtn = () => {
+        btn.empty();
+        const iconSpan = btn.createSpan({ cls: "[&>svg]:size-[1em]" });
+        setIcon(iconSpan, "play");
+        btn.createSpan({ text: "Run" });
+      };
+
+      resetBtn();
 
       // Output area: hidden until Run is clicked, separated by a horizontal rule
       const output = wrapper.createDiv({
@@ -46,7 +54,7 @@ export default class CodeRunnerPlugin extends Plugin {
       btn.addEventListener("click", async () => {
         // Disable button and show loading state while waiting for the server
         btn.disabled = true;
-        btn.textContent = "Running…";
+        btn.textContent = "Running…"; // replaces icon children temporarily
         output.empty();
         output.show();
         output.createEl("span", {
@@ -125,7 +133,7 @@ export default class CodeRunnerPlugin extends Plugin {
         } finally {
           // Always restore the button to its ready state
           btn.disabled = false;
-          btn.textContent = "▶ Run";
+          resetBtn();
         }
       });
     });
