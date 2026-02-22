@@ -4,10 +4,6 @@
 .rust-runner {
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--background-modifier-border);
-  margin: 0.5em 0;
 }
 
 /* ── Code block: remove default margins so it flush-fits the container ───── */
@@ -15,30 +11,6 @@
   margin: 0;
   border-radius: 0;
   border: none;
-}
-
-/* ── Run button row: sits below the code, aligned to the right ───────────── */
-.rust-runner-btn {
-  align-self: flex-end;
-  margin: 4px 8px;
-  padding: 2px 10px;
-  font-size: 0.8em;
-  cursor: pointer;
-  border-radius: 4px;
-  background: var(--interactive-accent);
-  color: var(--text-on-accent);
-  border: none;
-  opacity: 0.85;
-  transition: opacity 0.15s;
-}
-
-.rust-runner-btn:hover {
-  opacity: 1;
-}
-
-.rust-runner-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 
 /* ── Output area ──────────────────────────────────────────────────────────── */

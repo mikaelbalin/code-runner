@@ -31,7 +31,7 @@ export default class CodeRunnerPlugin extends Plugin {
 
       // Button anchored to the bottom-right of the container
       const btn = wrapper.createEl("button", {
-        cls: "rust-runner-btn",
+        cls: "self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-[var(--interactive-accent)] text-[var(--text-on-accent)] border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
         text: "▶ Run",
       });
 
