@@ -19,7 +19,7 @@ export default class CodeRunnerPlugin extends Plugin {
     this.registerMarkdownCodeBlockProcessor("rust", async (source, el) => {
       // Common container holding the code block, button, and output
       const wrapper = el.createDiv({
-        cls: "bg-[var(--code-background)]",
+        cls: "flex flex-col bg-[var(--code-background)]",
       });
 
       // Build a <pre class="language-rust"><code> structure matching Obsidian's
@@ -33,7 +33,7 @@ export default class CodeRunnerPlugin extends Plugin {
 
       // Button anchored to the bottom-right of the container
       const btn = wrapper.createEl("button", {
-        cls: "inline-flex items-center gap-1 self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-(--interactive-accent) text-(--text-on-accent) border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
+        cls: "flex items-center gap-1 self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-(--interactive-accent) text-(--text-on-accent) border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
       });
 
       const resetBtn = () => {
@@ -77,7 +77,7 @@ export default class CodeRunnerPlugin extends Plugin {
           output.empty();
           // Separator between code and output
           output.createEl("hr", {
-            cls: "mb-2 border-0 border-t border-(--background-modifier-border)",
+            cls: "mt-3! border-0 border-t border-(--background-modifier-border)",
           });
 
           // 408 means the server killed the process due to execution timeout
