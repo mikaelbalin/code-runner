@@ -18,7 +18,9 @@ export default class CodeRunnerPlugin extends Plugin {
     // Register a processor for fenced ```rust code blocks
     this.registerMarkdownCodeBlockProcessor("rust", async (source, el) => {
       // Common container holding the code block, button, and output
-      const wrapper = el.createDiv({ cls: "rust-runner" });
+      const wrapper = el.createDiv({
+        cls: "bg-[var(--code-background)]",
+      });
 
       // Build a <pre class="language-rust"><code> structure matching Obsidian's
       // own output. The language class must be on <pre>; Prism walks up from
@@ -31,12 +33,14 @@ export default class CodeRunnerPlugin extends Plugin {
 
       // Button anchored to the bottom-right of the container
       const btn = wrapper.createEl("button", {
-        cls: "self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-[var(--interactive-accent)] text-[var(--text-on-accent)] border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
+        cls: "self-end my-1 mx-2 py-0.5 px-2.5 text-[0.8em] cursor-pointer rounded bg-(--interactive-accent) text-(--text-on-accent) border-0 opacity-85 transition-opacity duration-150 hover:opacity-100 disabled:opacity-50 disabled:cursor-default",
         text: "▶ Run",
       });
 
       // Output area: hidden until Run is clicked, separated by a horizontal rule
-      const output = wrapper.createDiv({ cls: "rust-runner-output" });
+      const output = wrapper.createDiv({
+        cls: "bg-(--code-background)",
+      });
       output.hide();
 
       btn.addEventListener("click", async () => {
@@ -64,7 +68,9 @@ export default class CodeRunnerPlugin extends Plugin {
 
           output.empty();
           // Separator between code and output
-          output.createEl("hr", { cls: "rust-runner-divider" });
+          output.createEl("hr", {
+            cls: "mb-2 border-0 border-t border-(--background-modifier-border)",
+          });
 
           // 408 means the server killed the process due to execution timeout
           if (resp.status === 408) {
