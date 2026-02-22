@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-code-runner-server",
+  "version": "0.0.1",
+  "description": "Code runner server",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": ""
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

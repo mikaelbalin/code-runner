@@ -1,2 +1,6 @@
+packages:
+  - plugin
+  - server
+
 onlyBuiltDependencies:
   - esbuild
