@@ -5,13 +5,17 @@ import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, type Plugin } from "vite";
 
-function copyToRoot(rootDir: string, files: string[]): Plugin {
+function copyToRoot(
+  rootDir: string,
+  files: Array<string | [src: string, dest: string]>
+): Plugin {
   return {
     name: "copy-to-root",
     async writeBundle(options) {
       const outDir = options.dir ?? dirname(options.file ?? "dist");
       for (const file of files) {
-        await copyFile(resolve(outDir, file), resolve(rootDir, file));
+        const [src, dest] = Array.isArray(file) ? file : [file, file];
+        await copyFile(resolve(outDir, src), resolve(rootDir, dest));
       }
     },
   };
@@ -26,7 +30,13 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 export default defineConfig(({ mode }) => ({
-  plugins: [tailwindcss(), copyToRoot(resolve(__dirname, ".."), ["main.js"])],
+  plugins: [
+    tailwindcss(),
+    copyToRoot(resolve(__dirname, ".."), [
+      "main.js",
+      ["obsidian-code-runner-plugin.css", "styles.css"],
+    ]),
+  ],
   build: {
     emptyOutDir: false,
     lib: {

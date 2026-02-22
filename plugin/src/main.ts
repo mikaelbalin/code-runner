@@ -1,4 +1,5 @@
-import { Plugin, requestUrl } from "obsidian";
+import { loadPrism, Plugin, requestUrl } from "obsidian";
+import "./styles.css";
 import {
   type CodeRunnerPluginSettings,
   CodeRunnerSettingTab,
@@ -15,21 +16,26 @@ export default class CodeRunnerPlugin extends Plugin {
     this.addSettingTab(new CodeRunnerSettingTab(this.app, this));
 
     // Register a processor for fenced ```rust code blocks
-    this.registerMarkdownCodeBlockProcessor("rust", (source, el) => {
-      // Container wrapping the code block, run button, and output area
+    this.registerMarkdownCodeBlockProcessor("rust", async (source, el) => {
+      // Common container holding the code block, button, and output
       const wrapper = el.createDiv({ cls: "rust-runner" });
 
-      // Render the raw source with syntax-highlight class so themes can style it
-      const pre = wrapper.createEl("pre");
-      pre.createEl("code", { cls: "language-rust", text: source });
+      // Build a <pre class="language-rust"><code> structure matching Obsidian's
+      // own output. The language class must be on <pre>; Prism walks up from
+      // <code> to find it.
+      const pre = wrapper.createEl("pre", { cls: "language-rust" });
+      const code = pre.createEl("code");
+      code.textContent = source;
+      const prism = await loadPrism();
+      prism.highlightElement(code);
 
-      // Button that triggers code execution
+      // Button anchored to the bottom-right of the container
       const btn = wrapper.createEl("button", {
         cls: "rust-runner-btn",
         text: "▶ Run",
       });
 
-      // Output area is hidden until the user clicks Run
+      // Output area: hidden until Run is clicked, separated by a horizontal rule
       const output = wrapper.createDiv({ cls: "rust-runner-output" });
       output.hide();
 
@@ -57,12 +63,14 @@ export default class CodeRunnerPlugin extends Plugin {
           });
 
           output.empty();
+          // Separator between code and output
+          output.createEl("hr", { cls: "rust-runner-divider" });
 
           // 408 means the server killed the process due to execution timeout
           if (resp.status === 408) {
             output.createEl("pre", {
               cls: "rust-runner-error",
-              text: "⏱ Timeout: execution took too long.",
+              text: "Timeout: execution took too long.",
             });
             return;
           }
