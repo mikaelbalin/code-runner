@@ -1,7 +1,20 @@
+import { copyFile } from "node:fs/promises";
 import { builtinModules } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+
+function copyToRoot(rootDir: string, files: string[]): Plugin {
+  return {
+    name: "copy-to-root",
+    async writeBundle(options) {
+      const outDir = options.dir ?? dirname(options.file ?? "dist");
+      for (const file of files) {
+        await copyFile(resolve(outDir, file), resolve(rootDir, file));
+      }
+    },
+  };
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -12,7 +25,9 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 export default defineConfig(({ mode }) => ({
+  plugins: [copyToRoot(resolve(__dirname, ".."), ["main.js"])],
   build: {
+    emptyOutDir: false,
     lib: {
       entry: resolve(__dirname, "src/main.ts"),
       formats: ["cjs"],
