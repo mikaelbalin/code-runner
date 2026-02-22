@@ -2,11 +2,17 @@
   "name": "obsidian-code-runner-server",
   "version": "0.0.1",
   "description": "Code runner server",
-  "main": "main.js",
+  "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "dev": ""
+    "dev": "node --experimental-strip-types --watch src/server.ts",
+    "start": "node --experimental-strip-types src/server.ts"
   },
-  "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "express": "5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6"
+  }
 }
+
