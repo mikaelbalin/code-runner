@@ -1,83 +1,103 @@
-import {
-  // type App, Modal,
-  Notice,
-  Plugin,
-} from "obsidian";
+import { Plugin, requestUrl } from "obsidian";
 import {
   type CodeRunnerPluginSettings,
+  CodeRunnerSettingTab,
   DEFAULT_SETTINGS,
-  SampleSettingTab,
 } from "./settings";
 
-// Remember to rename these classes and interfaces!
-
 export default class CodeRunnerPlugin extends Plugin {
-  settings: CodeRunnerPluginSettings;
+  settings!: CodeRunnerPluginSettings;
 
   async onload() {
     await this.loadSettings();
+    this.addSettingTab(new CodeRunnerSettingTab(this.app, this));
 
-    // This creates an icon in the left ribbon.
-    this.addRibbonIcon("dice", "Greet", (_evt: MouseEvent) => {
-      // Called when the user clicks the icon.
-      new Notice("Hello, world!");
+    this.registerMarkdownCodeBlockProcessor("rust", (source, el) => {
+      const wrapper = el.createDiv({ cls: "rust-runner" });
+
+      const pre = wrapper.createEl("pre");
+      pre.createEl("code", { cls: "language-rust", text: source });
+
+      const btn = wrapper.createEl("button", {
+        cls: "rust-runner-btn",
+        text: "▶ Run",
+      });
+
+      const output = wrapper.createDiv({ cls: "rust-runner-output" });
+      output.hide();
+
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        btn.textContent = "Running…";
+        output.empty();
+        output.show();
+        output.createEl("span", {
+          cls: "rust-runner-loading",
+          text: "Running…",
+        });
+
+        try {
+          const resp = await requestUrl({
+            url: `${this.settings.serverUrl}/run`,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: source }),
+            throw: false,
+          });
+
+          output.empty();
+
+          if (resp.status === 408) {
+            output.createEl("pre", {
+              cls: "rust-runner-error",
+              text: "⏱ Timeout: execution took too long.",
+            });
+            return;
+          }
+
+          const data = resp.json as {
+            stdout: string;
+            stderr: string;
+            exitCode: number | null;
+            timedOut?: boolean;
+            error?: string;
+          };
+
+          if (data.error) {
+            output.createEl("pre", {
+              cls: "rust-runner-error",
+              text: `Error: ${data.error}`,
+            });
+            return;
+          }
+
+          if (data.stdout)
+            output.createEl("pre", {
+              cls: "rust-runner-stdout",
+              text: data.stdout,
+            });
+          if (data.stderr)
+            output.createEl("pre", {
+              cls: "rust-runner-stderr",
+              text: data.stderr,
+            });
+          if (!data.stdout && !data.stderr)
+            output.createEl("span", {
+              cls: "rust-runner-empty",
+              text: "(no output)",
+            });
+        } catch (err) {
+          output.empty();
+          output.createEl("pre", {
+            cls: "rust-runner-error",
+            text: `Failed to connect to server: ${String(err)}`,
+          });
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "▶ Run";
+        }
+      });
     });
-
-    // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-    // const statusBarItemEl = this.addStatusBarItem();
-    // statusBarItemEl.setText("Status bar text");
-
-    // This adds a simple command that can be triggered anywhere
-    // this.addCommand({
-    //   id: "open-modal-simple",
-    //   name: "Open modal (simple)",
-    //   callback: () => {
-    //     new SampleModal(this.app).open();
-    //   },
-    // });
-    // This adds an editor command that can perform some operation on the current editor instance
-    // this.addCommand({
-    //   id: "replace-selected",
-    //   name: "Replace selected content",
-    //   editorCallback: (editor: Editor, view: MarkdownView) => {
-    //     editor.replaceSelection("Sample editor command");
-    //   },
-    // });
-    // This adds a complex command that can check whether the current state of the app allows execution of the command
-    // this.addCommand({
-    //   id: "open-modal-complex",
-    //   name: "Open modal (complex)",
-    //   checkCallback: (checking: boolean) => {
-    //     // Conditions to check
-    //     const markdownView =
-    //       this.app.workspace.getActiveViewOfType(MarkdownView);
-    //     if (markdownView) {
-    //       // If checking is true, we're simply "checking" if the command can be run.
-    //       // If checking is false, then we want to actually perform the operation.
-    //       if (!checking) {
-    //         new SampleModal(this.app).open();
-    //       }
-
-    //       // This command will only show up in Command Palette when the check function returns true
-    //       return true;
-    //     }
-    //     return false;
-    //   },
-    // });
-
-    // This adds a settings tab so the user can configure various aspects of the plugin
-    this.addSettingTab(new SampleSettingTab(this.app, this));
-
-    // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-    // Using this function will automatically remove the event listener when this plugin is disabled.
-    // this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-    //   new Notice("Click");
-    // });
-
-    // When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-    // this.registerInterval(
-    //   window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000),
-    // );
   }
 
   onunload() {}
@@ -94,19 +114,3 @@ export default class CodeRunnerPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 }
-
-// class SampleModal extends Modal {
-//   constructor(app: App) {
-//     super(app);
-//   }
-
-//   onOpen() {
-//     const { contentEl } = this;
-//     contentEl.setText("Woah!");
-//   }
-
-//   onClose() {
-//     const { contentEl } = this;
-//     contentEl.empty();
-//   }
-// }

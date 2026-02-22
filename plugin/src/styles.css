@@ -1,8 +1,62 @@
-/*
+.rust-runner {
+  position: relative;
+  margin: 0.5em 0;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.rust-runner pre {
+  margin: 0;
+}
 
-If your plugin does not need CSS, delete this file.
+.rust-runner-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 10px;
+  font-size: 0.8em;
+  cursor: pointer;
+  border-radius: 4px;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border: none;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
 
-*/
+.rust-runner-btn:hover {
+  opacity: 1;
+}
+
+.rust-runner-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.rust-runner-output {
+  margin-top: 4px;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: var(--background-secondary);
+  font-size: 0.9em;
+}
+
+.rust-runner-stdout,
+.rust-runner-stderr,
+.rust-runner-error {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.rust-runner-stderr {
+  color: var(--text-warning);
+}
+
+.rust-runner-error {
+  color: var(--text-error);
+}
+
+.rust-runner-loading,
+.rust-runner-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}

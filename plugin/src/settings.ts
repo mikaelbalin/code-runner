@@ -1,36 +1,36 @@
 import { type App, PluginSettingTab, Setting } from "obsidian";
-import type MyPlugin from "./main";
+import type CodeRunnerPlugin from "./main";
 
 export interface CodeRunnerPluginSettings {
-  mySetting: string;
+  serverUrl: string;
 }
 
 export const DEFAULT_SETTINGS: CodeRunnerPluginSettings = {
-  mySetting: "default",
+  serverUrl: "http://localhost:3000",
 };
 
-export class SampleSettingTab extends PluginSettingTab {
-  plugin: MyPlugin;
+export class CodeRunnerSettingTab extends PluginSettingTab {
+  plugin: CodeRunnerPlugin;
 
-  constructor(app: App, plugin: MyPlugin) {
+  constructor(app: App, plugin: CodeRunnerPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
 
   display(): void {
     const { containerEl } = this;
-
     containerEl.empty();
+    containerEl.createEl("h2", { text: "Rust Runner" });
 
     new Setting(containerEl)
-      .setName("Settings #1")
-      .setDesc("It's a secret")
+      .setName("Server URL")
+      .setDesc("Address of the rust-runner backend server.")
       .addText((text) =>
         text
-          .setPlaceholder("Enter your secret")
-          .setValue(this.plugin.settings.mySetting)
+          .setPlaceholder("http://localhost:3000")
+          .setValue(this.plugin.settings.serverUrl)
           .onChange(async (value) => {
-            this.plugin.settings.mySetting = value;
+            this.plugin.settings.serverUrl = value.trimEnd().replace(/\/$/, "");
             await this.plugin.saveSettings();
           })
       );
