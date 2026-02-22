@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT ?? 3000;
 const TIMEOUT_MS = parseInt(process.env.TIMEOUT_MS ?? "30000", 10);
 const PODMAN_IMAGE = process.env.PODMAN_IMAGE ?? "rust-runner";
+const [PODMAN_CMD, ...PODMAN_CMD_PREFIX_ARGS] = (process.env.PODMAN_CMD ?? "distrobox-host-exec podman").split(" ");
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -36,7 +37,7 @@ async function runInPodman(codePath: string): Promise<RunResult> {
       "/app/code.rs",
     ];
 
-    const child = spawn("podman", args);
+    const child = spawn(PODMAN_CMD, [...PODMAN_CMD_PREFIX_ARGS, ...args]);
 
     let stdout = "";
     let stderr = "";
