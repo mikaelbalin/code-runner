@@ -4,7 +4,8 @@
   "description": "Code runner plugin monorepo",
   "type": "module",
   "scripts": {
-    "dev": "pnpm -r --parallel run dev", 
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm --filter obsidian-code-runner-plugin run build",
     "start": "pnpm --filter obsidian-code-runner-server run start"
   },
   "keywords": [],
