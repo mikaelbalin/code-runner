@@ -1,21 +1,33 @@
-import { copyFile } from "node:fs/promises";
+import { copyFile, mkdir } from "node:fs/promises";
 import { builtinModules } from "node:module";
-import { dirname, resolve } from "node:path";
+import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 
-function copyToRoot(
-  rootDir: string,
+function copyToObsidian(
   files: Array<string | [src: string, dest: string]>
 ): Plugin {
   return {
-    name: "copy-to-root",
+    name: "copy-to-obsidian",
     async writeBundle(options) {
+      const targetDir = process.env.OBSIDIAN_PLUGIN_DIR;
+      if (!targetDir) {
+        console.warn(
+          "OBSIDIAN_PLUGIN_DIR environment variable is not set. Skipping file copy."
+        );
+        return;
+      }
+
       const outDir = options.dir ?? dirname(options.file ?? "dist");
+
+      // Ensure target directory exists
+      await mkdir(targetDir, { recursive: true });
+
       for (const file of files) {
         const [src, dest] = Array.isArray(file) ? file : [file, file];
-        await copyFile(resolve(outDir, src), resolve(rootDir, dest));
+        const srcPath = isAbsolute(src) ? src : resolve(outDir, src);
+        await copyFile(srcPath, resolve(targetDir, dest));
       }
     },
   };
@@ -29,44 +41,50 @@ if you want to view the source, please visit the github repository of this plugi
 */
 `;
 
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    tailwindcss(),
-    copyToRoot(resolve(__dirname, ".."), [
-      "main.js",
-      ["obsidian-code-runner-plugin.css", "styles.css"],
-    ]),
-  ],
-  build: {
-    emptyOutDir: false,
-    lib: {
-      entry: resolve(__dirname, "src/main.ts"),
-      formats: ["cjs"],
-    },
-    rollupOptions: {
-      external: [
-        "obsidian",
-        "electron",
-        "@codemirror/autocomplete",
-        "@codemirror/collab",
-        "@codemirror/commands",
-        "@codemirror/language",
-        "@codemirror/lint",
-        "@codemirror/search",
-        "@codemirror/state",
-        "@codemirror/view",
-        "@lezer/common",
-        "@lezer/highlight",
-        "@lezer/lr",
-        ...builtinModules,
-      ],
-      output: {
-        entryFileNames: "main.js",
-        banner,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  Object.assign(process.env, env);
+
+  return {
+    plugins: [
+      tailwindcss(),
+      copyToObsidian([
+        "main.js",
+        ["obsidian-code-runner-plugin.css", "styles.css"],
+        [resolve(__dirname, "manifest.json"), "manifest.json"],
+      ]),
+    ],
+    build: {
+      emptyOutDir: false,
+      lib: {
+        entry: resolve(__dirname, "src/main.ts"),
+        formats: ["cjs"],
       },
+      rollupOptions: {
+        external: [
+          "obsidian",
+          "electron",
+          "@codemirror/autocomplete",
+          "@codemirror/collab",
+          "@codemirror/commands",
+          "@codemirror/language",
+          "@codemirror/lint",
+          "@codemirror/search",
+          "@codemirror/state",
+          "@codemirror/view",
+          "@lezer/common",
+          "@lezer/highlight",
+          "@lezer/lr",
+          ...builtinModules,
+        ],
+        output: {
+          entryFileNames: "main.js",
+          banner,
+        },
+      },
+      target: "es2018",
+      sourcemap: mode === "production" ? false : "inline",
+      minify: mode === "production",
     },
-    target: "es2018",
-    sourcemap: mode === "production" ? false : "inline",
-    minify: mode === "production",
-  },
-}));
+  };
+});
