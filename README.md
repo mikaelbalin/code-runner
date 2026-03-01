@@ -1,16 +1,14 @@
 # Project Setup
 
-## Getting Started
-
 This README provides the necessary steps to set up and run this project.
 
-### Prerequisites
+## Prerequisites
 
 - Tailscale
 - pnpm (or npm/yarn)
 - Node.js
 
-### Steps
+## Steps
 
 1. **Enable and configure Tailscale**
 ```sh
