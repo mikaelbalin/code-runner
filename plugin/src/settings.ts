@@ -4,7 +4,7 @@ import type CodeRunnerPlugin from "./main";
 export interface CodeRunnerPluginSettings {
   serverUrl: string;
 }
-
+console.log(import.meta.env.SERVER_URL);
 export const DEFAULT_SETTINGS: CodeRunnerPluginSettings = {
   serverUrl: "http://localhost:3000",
 };
@@ -32,7 +32,7 @@ export class CodeRunnerSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.serverUrl = value.trimEnd().replace(/\/$/, "");
             await this.plugin.saveSettings();
-          })
+          }),
       );
   }
 }

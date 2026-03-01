@@ -86,14 +86,3 @@ If you have multiple URLs, you can also do:
   }
 }
 ```
-
-## Other
-
-```sh
-podman run --rm \
---network none \
---memory "256m" \
---cpus "0.5" \
--v "$(pwd):/app:Z,ro" \
-ust-runner /app/test.rs
-```
