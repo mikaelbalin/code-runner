@@ -10,9 +10,9 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@biomejs/biome": "2.4.4",
-    "@types/node": "25.3.0",
-    "globals": "17.3.0",
+    "@biomejs/biome": "2.4.6",
+    "@types/node": "25.3.5",
+    "globals": "17.4.0",
     "tslib": "2.8.1",
     "typescript": "5.9.3"
   }
