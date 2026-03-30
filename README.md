@@ -27,7 +27,6 @@ Create a `.env` file in the `plugin` directory. Add the following variables:
 
 ```sh
 OBSIDIAN_PLUGIN_DIR=your-plugin-directory
-SERVER_URL=http://your-server-url
 ```
 
 4. **Set up container**
