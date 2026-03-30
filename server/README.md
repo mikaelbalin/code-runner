@@ -29,3 +29,21 @@ This command does the following:
 - `--memory "256m"`: Limit the memory usage of the container to 256MB.
 - `--cpus "0.5"`: Limit the CPU usage of the container to half a core.
 - `-v "$(pwd):/app:Z,ro"`: Mount the current directory into the `/app` directory inside the container with read-only permissions.
+
+## Troubleshooting
+
+### Memory cgroup error on Raspberry Pi
+
+If you see:
+
+```
+Error: crun: opening file `memory.max` for writing: No such file or directory: OCI runtime attempted to invoke a command that was not found
+```
+
+The memory cgroup controller is not enabled in the kernel. Add the following parameters to your kernel command line in `/boot/firmware/cmdline.txt`:
+
+```
+cgroup_memory=1 cgroup_enable=memory
+```
+
+Append them to the **existing line** (do not add a newline), then reboot.
