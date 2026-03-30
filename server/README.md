@@ -56,7 +56,7 @@ Error: crun: opening file `memory.max` for writing: No such file or directory: O
 The memory cgroup controller is not enabled in the kernel. Add the following parameters to your kernel command line in `/boot/firmware/cmdline.txt`:
 
 ```
-cgroup_memory=1 cgroup_enable=memory
+cgroup_enable=memory
 ```
 
 Append them to the **existing line** (do not add a newline), then reboot.
