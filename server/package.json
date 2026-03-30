@@ -5,8 +5,8 @@
   "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "node --experimental-strip-types --watch src/server.ts",
-    "start": "node --experimental-strip-types src/server.ts"
+    "dev": "node --env-file=.env --watch src/server.ts",
+    "start": "node --env-file=.env src/server.ts"
   },
   "dependencies": {
     "express": "5.2.1"
@@ -15,4 +15,3 @@
     "@types/express": "5.0.6"
   }
 }
-
