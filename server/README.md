@@ -30,6 +30,19 @@ This command does the following:
 - `--cpus "0.5"`: Limit the CPU usage of the container to half a core.
 - `-v "$(pwd):/app:Z,ro"`: Mount the current directory into the `/app` directory inside the container with read-only permissions.
 
+## Environment Variables
+
+Configure the server by creating a `.env` file in the server directory:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `PORT` | `3000` | Port the server listens on |
+| `TIMEOUT_MS` | `30000` | Maximum container runtime before it is killed (ms) |
+| `PODMAN_IMAGE` | `rust-runner` | Container image used to compile and run code |
+| `PODMAN_CMD` | `distrobox-host-exec podman` | Command to invoke Podman (supports multi-word commands) |
+
+When running outside Distrobox (e.g. directly on a Raspberry Pi), set `PODMAN_CMD=podman` in your `.env` file.
+
 ## Troubleshooting
 
 ### Memory cgroup error on Raspberry Pi
