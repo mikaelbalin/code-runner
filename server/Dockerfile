@@ -1,20 +1,17 @@
-# Используем стабильный и легкий образ
+# Use a stable and lightweight image
 FROM rust:1.93-slim-bookworm
 
-# Устанавливаем минимальный набор для сборки и curl
+# Install the minimal set of dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+    curl
 
-# Устанавливаем rust-script
+# Install rust-script
 RUN cargo install rust-script
 
-# Создаем пользователя 'sandbox'. 
-# В Podman rootless этот пользователь внутри контейнера 
-# будет отображаться на твоего текущего пользователя в ОС.
+# Create a 'sandbox' user. In rootless Podman, this user inside the container will be mapped to your current OS user.
 RUN useradd -m sandbox
 USER sandbox
 WORKDIR /home/sandbox
 
-# Указываем ENTRYPOINT, чтобы контейнер вел себя как исполняемый файл
+# Set ENTRYPOINT so the container behaves like an executable
 ENTRYPOINT ["rust-script"]
