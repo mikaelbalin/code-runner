@@ -12,7 +12,7 @@ This README provides the necessary steps to set up and run this project.
 
 1. **Enable and configure Tailscale**
 ```sh
-   ujust enable-taiscale
+   ujust enable-tailscale
    sudo tailscale set --operator=$USER
    tailscale up
 ```
